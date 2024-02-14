@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-mongoose.connect("mongodb+srv://admin:nynddRW7OlHCETM6@cluster0.ppvdeo8.mongodb.net/Movie_app?retryWrites=true&w=majority").
+mongoose.connect(process.env.MONGO_URI).
     then(() => {
         console.log('DB is connected...!');
     }).catch((err) => {
