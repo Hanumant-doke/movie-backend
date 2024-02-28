@@ -38,7 +38,13 @@ exports.create = async (req, res) => {
     `
     })
 
-    res.status(201).json({ message: 'Please verify you email. OTP has been sent to your email account!' })
+    res.status(201).json({
+        user: {
+            id: newUser._id,
+            name: newUser.name,
+            email: newUser.email,
+        }
+    })
 };
 
 exports.verifyEmail = async (req, res) => {
@@ -195,19 +201,19 @@ exports.resetPassword = async (req, res) => {
 
 exports.signIn = async (req, res, next) => {
     const { email, password } = req.body;
-   
-        const user = await User.findOne({ email });
-        if (!user) return sendError(res, "Email/Password mismatch!");
 
-        const matched = await user.comparePassword(password);
-        if (!matched) return sendError(res, "Email/Password mismatch!");
+    const user = await User.findOne({ email });
+    if (!user) return sendError(res, "Email/Password mismatch!");
 
-        const { _id, name } = user;
+    const matched = await user.comparePassword(password);
+    if (!matched) return sendError(res, "Email/Password mismatch!");
 
-        const jwtToken = jwt.sign({ userId: _id }, process.env.JWT_SECRET);
+    const { _id, name } = user;
 
-        res.json({
-            user: { id: _id, name, email, token: jwtToken, },
-        });
-    
+    const jwtToken = jwt.sign({ userId: _id }, process.env.JWT_SECRET);
+
+    res.json({
+        user: { id: _id, name, email, token: jwtToken, },
+    });
+
 };
